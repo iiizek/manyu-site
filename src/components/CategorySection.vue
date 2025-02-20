@@ -68,14 +68,21 @@ const handleResize = () => {
 onMounted(() => {
   isLoading.value = true;
 
-  getProductsByCollectionId(props.id)
-    .then((data) => {
-      allProducts.push(...data);
-      updateViewedProducts();
-    })
-    .finally(() => {
-      isLoading.value = false;
-    });
+  if (sessionStorage.getItem(`${props.slug}`)) {
+    allProducts.push(...JSON.parse(sessionStorage.getItem(`${props.slug}`)));
+    updateViewedProducts();
+    isLoading.value = false;
+  } else {
+    getProductsByCollectionId(props.id)
+      .then((data) => {
+        allProducts.push(...data);
+        sessionStorage.setItem(`${props.slug}`, JSON.stringify(allProducts));
+        updateViewedProducts();
+      })
+      .finally(() => {
+        isLoading.value = false;
+      });
+  }
 
   window.addEventListener("resize", handleResize);
 });

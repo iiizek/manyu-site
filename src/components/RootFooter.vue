@@ -15,6 +15,7 @@
 @use "@/assets/variables" as var;
 
 .container {
+  background-color: var.$c-background;
   display: flex;
   flex-direction: column;
   align-items: start;

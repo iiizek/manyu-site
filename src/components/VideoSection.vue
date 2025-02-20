@@ -74,10 +74,8 @@ onUnmounted(() => {
 @use "@/assets/variables" as var;
 
 .container {
-  @media (width >= 768px) {
-    width: 100%;
-    height: 100vh;
-  }
+  width: 100%;
+  height: 100lvh;
 }
 
 .red {

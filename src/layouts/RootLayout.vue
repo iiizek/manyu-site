@@ -20,7 +20,9 @@ onMounted(() => {
 </template>
 
 <style module lang="scss">
+@use "@/assets/variables" as var;
 .container {
   flex: 1;
+  background-color: var.$c-background;
 }
 </style>
