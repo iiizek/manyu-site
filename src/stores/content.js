@@ -10,7 +10,7 @@ const useContentStore = defineStore("content", () => {
 
   const getTopVideo = async () => {
     try {
-      if (Object.keys(topVideoSection).length) return;
+      if (Object.keys(topVideoSection).length > 0) return;
 
       const data = await directus.request(
         readItems("video_sections", {
@@ -31,7 +31,7 @@ const useContentStore = defineStore("content", () => {
 
   const getVideoSections = async () => {
     try {
-      if (videoSections.length) return;
+      if (videoSections.length > 0) return;
       const data = await directus.request(
         readItems("video_sections", {
           fields: ["background_color", { video: ["id"] }],

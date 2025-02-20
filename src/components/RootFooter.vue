@@ -20,6 +20,10 @@
   align-items: start;
   gap: 5rem;
   padding: 4.5rem 9rem;
+
+  @media (width < 768px) {
+    padding: 4.5rem 3.6rem;
+  }
 }
 
 .link {

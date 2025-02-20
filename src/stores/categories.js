@@ -11,7 +11,7 @@ const useCategoriesStore = defineStore("categories", () => {
 
   const getTopCollection = async () => {
     try {
-      if (Object.keys(topCollection).length) return;
+      if (Object.keys(topCollection).length > 0) return;
 
       const data = await directus.request(
         readItems("collections", {

@@ -27,12 +27,12 @@ import RootLayout from "@/layouts/RootLayout.vue";
 }
 
 .slide-enter-from {
-  transform: translateX(100%);
+  transform: translateX(-100%);
   opacity: 0;
 }
 
 .slide-leave-to {
-  transform: translateX(-100%);
+  transform: translateX(100%);
   opacity: 0;
 }
 

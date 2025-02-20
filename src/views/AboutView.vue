@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, ref, onUnmounted } from "vue";
+import { useSeoMeta } from "@unhead/vue";
 
 import useContentStore from "@/stores/content";
 import RootLoader from "@/components/RootLoader.vue";
@@ -22,6 +23,11 @@ onMounted(async () => {
 
 onUnmounted(() => {
   isLoading.value = false;
+});
+
+useSeoMeta({
+  title:
+    "MANYU | О бренде | Own Premium Production From Dagestan since 2020. Concept basic clothing",
 });
 </script>
 
@@ -69,6 +75,10 @@ onUnmounted(() => {
   padding: 9rem 13rem;
   animation: opacity 1s;
 
+  @media (width < 768px) {
+    padding: 9rem 6rem;
+  }
+
   & > svg {
     z-index: -10;
     position: fixed;
@@ -83,6 +93,10 @@ onUnmounted(() => {
   text-transform: uppercase;
   font-weight: var.$fw-semi;
   margin-bottom: 2.4rem;
+
+  @media (width < 1200px) {
+    font-size: 3.2rem;
+  }
 }
 
 .content {
@@ -91,9 +105,17 @@ onUnmounted(() => {
   gap: 2.4rem;
   width: 92rem;
 
+  @media (width < 1200px) {
+    width: 100%;
+  }
+
   & > p {
     font-size: 1.8rem;
     color: var.$c-neutral-1;
+
+    @media (width < 1200px) {
+      font-size: 2.4rem;
+    }
 
     & > em {
       font-style: italic;

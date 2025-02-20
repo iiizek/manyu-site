@@ -38,7 +38,14 @@ defineProps({
           },
         ]"
       >
-        <img :src="imgUrl" :alt="imgUrl ? name : ''" :class="$style.image" />
+        <img
+          loading="lazy"
+          width="458"
+          height="610"
+          :src="imgUrl ? imgUrl : null"
+          :alt="imgUrl ? name : ''"
+          :class="$style.image"
+        />
       </div>
 
       <h3
@@ -97,14 +104,20 @@ defineProps({
 .imageWrapper {
   background-color: var.$c-neutral-4;
   display: flex;
+  position: relative;
   justify-content: center;
   align-items: center;
   height: 61rem;
   transition: 0.2s background-color;
+  overflow: hidden;
 
   & > img {
-    height: 85%;
-    object-fit: cover;
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: 100%;
+    overflow-clip-margin: content-box;
+    overflow: clip;
   }
 }
 
@@ -114,6 +127,10 @@ defineProps({
   padding-inline: 3.2rem;
   text-transform: uppercase;
   transition: 0.2s color;
+
+  @media (width < 768px) {
+    padding-inline: 1.6rem;
+  }
 }
 
 .loader {

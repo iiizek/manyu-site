@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, onMounted, ref, onUnmounted } from "vue";
+import { reactive, onMounted, ref, onUnmounted, watch } from "vue";
 
 import VideoSection from "./VideoSection.vue";
 import ProductCard from "./ProductCard.vue";
@@ -28,32 +28,74 @@ const props = defineProps({
   },
 });
 
+const sectionRef = ref(null);
+
+const screenWidth = ref(window.innerWidth);
 const isLoading = ref(false);
-const products = reactive([]);
+const isManyItems = ref(false);
+
+const allProducts = reactive([]);
+const viewedProducts = reactive([]);
+
 const { getProductsByCollectionId } = useProductsStore();
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+const updateViewedProducts = () => {
+  let maxItems = 4;
+
+  if (screenWidth.value > 2000) {
+    if (screenWidth.value <= 3000) {
+      maxItems = 5;
+    } else {
+      maxItems = 6;
+    }
+  } else if (screenWidth.value < 1200 && screenWidth.value >= 768) {
+    maxItems = 3;
+  } else if (screenWidth.value < 768) {
+    maxItems = 3;
+  }
+
+  isManyItems.value = allProducts.length > maxItems;
+  viewedProducts.splice(0, viewedProducts.length);
+  viewedProducts.push(...allProducts.slice(0, maxItems));
+};
+
+const handleResize = () => {
+  screenWidth.value = window.innerWidth;
+};
+
 onMounted(() => {
   isLoading.value = true;
 
-  getProductsByCollectionId(props.id).then((data) => {
-    products.push(...data);
-    isLoading.value = false;
-  });
+  getProductsByCollectionId(props.id)
+    .then((data) => {
+      allProducts.push(...data);
+      updateViewedProducts();
+    })
+    .finally(() => {
+      isLoading.value = false;
+    });
+
+  window.addEventListener("resize", handleResize);
+});
+
+watch(screenWidth, () => {
+  updateViewedProducts();
 });
 
 onUnmounted(() => {
   isLoading.value = false;
+  window.removeEventListener("resize", handleResize);
 });
 </script>
 
 <template>
-  <section :class="$style.container">
+  <section ref="sectionRef" :class="$style.container">
     <div :class="$style.header">
       <h2 :class="$style.name">{{ name }}</h2>
       <router-link
-        v-if="products.length > 4"
+        v-if="isManyItems"
         :class="$style.link"
         :to="`/collection-${slug}`"
       >
@@ -79,7 +121,7 @@ onUnmounted(() => {
 
     <ul v-else :class="$style.productList">
       <product-card
-        v-for="product in products.slice(0, 4)"
+        v-for="product in viewedProducts"
         :key="product.id"
         :id="product.id"
         :img-url="`${API_URL}/assets/${product.image}`"
@@ -119,6 +161,11 @@ onUnmounted(() => {
   justify-content: space-between;
   align-items: stretch;
   padding-inline: 12.8rem;
+
+  @media (width < 768px) {
+    padding-inline: 3.8rem;
+    align-items: center;
+  }
 }
 
 .name {
@@ -139,6 +186,10 @@ onUnmounted(() => {
   &:hover {
     color: var.$c-accent;
   }
+
+  @media (width < 768px) {
+    font-size: 2rem;
+  }
 }
 
 .productList {
@@ -151,5 +202,24 @@ onUnmounted(() => {
   justify-content: start;
   align-items: start;
   animation: opacity 1s;
+
+  @media (width < 768px) {
+    display: grid;
+    grid-template-columns: none;
+    grid-auto-flow: column;
+
+    width: 100%;
+    min-width: 0;
+
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    white-space: nowrap;
+    scrollbar-width: none;
+
+    & > li {
+      width: 45rem;
+      scroll-snap-align: center;
+    }
+  }
 }
 </style>

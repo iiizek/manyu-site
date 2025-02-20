@@ -25,7 +25,12 @@ const API_URL = import.meta.env.VITE_API_URL;
   <router-link :class="$style.link" :to="`/collection-${slug}`">
     <div :class="$style.container">
       <div :class="$style.imageWrapper">
-        <img :src="`${API_URL}/assets/${imgId}`" :alt="name" />
+        <img
+          width="920"
+          height="610"
+          :src="`${API_URL}/assets/${imgId}`"
+          :alt="name"
+        />
       </div>
       <h2 :class="$style.name">{{ name }}</h2>
     </div>
@@ -78,5 +83,9 @@ const API_URL = import.meta.env.VITE_API_URL;
   padding-inline: 3.2rem;
   text-transform: uppercase;
   transition: 0.2s color;
+
+  @media (width < 768px) {
+    font-size: 2.4rem;
+  }
 }
 </style>

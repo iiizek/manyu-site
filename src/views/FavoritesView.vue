@@ -5,6 +5,7 @@ import RootLoader from "@/components/RootLoader.vue";
 import ProductCard from "@/components/ProductCard.vue";
 import useProductsStore from "@/stores/products";
 import useFavoritesStore from "@/stores/favorites";
+import { useHead } from "@unhead/vue";
 
 const isLoading = ref(false);
 const favoriteProducts = ref([]);
@@ -15,7 +16,6 @@ const { favorites } = useFavoritesStore();
 const API_URL = import.meta.env.VITE_API_URL;
 
 onMounted(() => {
-  window.scrollTo(0, 0);
   if (favorites.length > 0) {
     isLoading.value = true;
   }
@@ -31,6 +31,11 @@ onMounted(() => {
 
 onUnmounted(() => {
   isLoading.value = false;
+});
+
+useHead({
+  title:
+    "MANYU | Любимое | Own Premium Production From Dagestan since 2020. Concept basic clothing",
 });
 </script>
 
@@ -83,6 +88,8 @@ onUnmounted(() => {
   align-items: center;
   color: var.$c-neutral-2;
   text-align: center;
+  max-width: 60vw;
+  margin: auto auto;
 
   h3 {
     font-size: 2.4rem;
@@ -102,6 +109,10 @@ onUnmounted(() => {
   color: var.$c-accent;
   text-transform: uppercase;
   padding-inline: 12.8rem;
+
+  @media (width < 768px) {
+    padding-inline: 3.6rem;
+  }
 }
 
 .productList {
@@ -113,5 +124,9 @@ onUnmounted(() => {
   padding-inline: 3.6rem;
   justify-content: start;
   align-items: start;
+
+  @media (width < 768px) {
+    row-gap: 6.4rem;
+  }
 }
 </style>

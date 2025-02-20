@@ -1,6 +1,5 @@
 <script setup>
 import { ref, onMounted, computed, onUnmounted } from "vue";
-import { useHead } from "@unhead/vue";
 
 import RootLoader from "@/components/RootLoader.vue";
 import VideoSection from "@/components/VideoSection.vue";
@@ -22,15 +21,6 @@ const isTopVideoLoaded = computed(
 const isTopCollectionLoaded = computed(
   () => Object.keys(topCollection).length > 0
 );
-
-useHead({
-  meta: [
-    {
-      name: "description",
-      content: "Главная страница",
-    },
-  ],
-});
 
 onMounted(() => {
   isLoading.value = true;
@@ -127,5 +117,11 @@ onUnmounted(() => {
   gap: 0.4rem;
   padding-inline: 3.6rem;
   padding-block: 9.2rem;
+
+  @media (width < 768px) {
+    grid-template-columns: 1fr;
+    padding-inline: 0rem;
+    gap: 9.2rem;
+  }
 }
 </style>

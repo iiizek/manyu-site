@@ -12,6 +12,7 @@ const emit = defineEmits(["toggle-nav"]);
 <template>
   <div :class="$style.hamburger">
     <input
+      id="burger-menu"
       :checked="isOpenNav"
       @change="emit('toggle-nav')"
       :class="$style.checkbox"

@@ -1,9 +1,13 @@
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, watchEffect } from "vue";
 import useCategoriesStore from "@/stores/categories";
 
-defineProps({
-  isShowing: {
+const props = defineProps({
+  isOpenNav: {
+    type: Boolean,
+    default: false,
+  },
+  isAnimating: {
     type: Boolean,
     default: false,
   },
@@ -25,10 +29,18 @@ onMounted(() => {
   getBaseCollections();
   getExtraCollections();
 });
+
+watchEffect(() => {
+  if (props.isOpenNav || props.isAnimating) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "";
+  }
+});
 </script>
 
 <template>
-  <nav v-show="isShowing" :class="$style.nav">
+  <nav v-show="isOpenNav || isAnimating" :class="$style.nav">
     <ul :class="$style.navList">
       <li :class="$style.navItem">
         <router-link
@@ -119,11 +131,22 @@ onMounted(() => {
   animation-name: navListOpacity;
   animation-duration: 0.5s;
   animation-fill-mode: forwards;
+
+  @media (width < 1200px) {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding-inline: 3.6rem;
+    gap: 6.4rem;
+  }
 }
 
 .navItem {
   font-weight: var.$fw-bold;
   font-size: 4.4rem;
+
+  @media (width < 768px) {
+    font-size: 4rem;
+  }
 }
 
 .navLink {

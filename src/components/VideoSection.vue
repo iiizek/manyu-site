@@ -29,7 +29,7 @@ onMounted(() => {
         }
       });
     },
-    { threshold: 0.5 }
+    { threshold: 0.1 }
   );
 
   if (videoRef.value) observer.observe(videoRef.value);
@@ -56,9 +56,9 @@ onUnmounted(() => {
   >
     <video
       v-show="videoId"
-      :ref="videoRef"
+      ref="videoRef"
       :class="$style.video"
-      :src="`${API_URL}/assets/${videoId}`"
+      :src="videoId && `${API_URL}/assets/${videoId}`"
       autoplay
       muted
       playsinline

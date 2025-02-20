@@ -18,8 +18,25 @@
 html {
 	font-family: var.$font-primary;
 	color: var.$c-text;
-	font-size: 0.521vw;
 	-webkit-text-size-adjust: 100%;
+
+	font-size: 0.521vw;
+
+	@media (width > 2000px) {
+		font-size: 0.4vw;
+	}
+
+	@media (width > 3000px) {
+		font-size: 0.36vw;
+	}
+
+	@media (width < 1200px) {
+		font-size: 0.67vw;
+	}
+
+	@media (width < 768px) {
+		font-size: 1.6vw;
+	}
 }
 
 body {

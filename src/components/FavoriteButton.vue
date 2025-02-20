@@ -45,5 +45,12 @@ watch(favorites, () => {
     transform: scale(0.9);
     opacity: 0.6;
   }
+
+  @media (width < 768px) {
+    & > svg {
+      width: 4rem;
+      height: 4rem;
+    }
+  }
 }
 </style>

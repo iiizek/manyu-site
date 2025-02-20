@@ -30,6 +30,9 @@ const goOnTop = () => {
   if (route.path === "/") {
     window.scrollTo(0, 0);
   }
+  if (isOpenNav.value) {
+    toggleNav();
+  }
 };
 </script>
 
@@ -53,12 +56,16 @@ const goOnTop = () => {
         </router-link>
       </h1>
 
-      <router-link to="/favorites" :class="$style.favorites">
+      <router-link to="/favorites" @click="goOnTop" :class="$style.favorites">
         <heart-icon :is-open-nav="isOpenNav" />
       </router-link>
     </div>
 
-    <root-nav @toggle-nav="toggleNav" :is-showing="isAnimating || isOpenNav" />
+    <root-nav
+      :is-open-nav="isOpenNav"
+      :is-animating="isAnimating"
+      @toggle-nav="toggleNav"
+    />
   </header>
 </template>
 

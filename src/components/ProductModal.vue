@@ -1,25 +1,35 @@
 <script setup>
 import { onMounted, reactive, watch, ref, onUnmounted } from "vue";
-import { useRouter, useRoute } from "vue-router";
+import { useRoute } from "vue-router";
+import { useHead } from "@unhead/vue";
 
 import RootLoader from "./RootLoader.vue";
 import FavoriteButton from "./FavoriteButton.vue";
 import useProductsStore from "@/stores/products";
+import useSwipe from "@/hooks/useSwipe";
+import useRouterBack from "@/hooks/useRouterBack";
 
 const { getProductById, sizes, getSizes } = useProductsStore();
+
+const route = useRoute();
+const routerBack = useRouterBack();
+
+const modalRef = ref(null);
 
 const chosenImage = ref(null);
 const isLoading = ref(false);
 const product = reactive({});
-const router = useRouter();
-const route = useRoute();
 
-const close = () => {
-  if (window.history.length > 1) {
-    router.back();
-  } else {
-    router.push("/");
-  }
+const { swipeStart, swipeMove, swipeEnd } = useSwipe(
+  100,
+  "clientY",
+  routerBack
+);
+
+const handleSwipeEnd = () => {
+  if (window.innerWidth > 768 || !modalRef.value) return;
+  if (modalRef.value.scrollTop !== 0) return;
+  swipeEnd();
 };
 
 const handleChosePhoto = (imageId) => {
@@ -29,13 +39,17 @@ const handleChosePhoto = (imageId) => {
 const API_URL = import.meta.env.VITE_API_URL;
 
 onMounted(async () => {
+  document.body.style.overflow = "hidden";
   isLoading.value = true;
 
-  getProductById(route.params.productId).then((data) => {
-    Object.assign(product, data);
-    chosenImage.value = product.images[0].directus_files_id;
-    isLoading.value = false;
-  });
+  getProductById(route.params.productId)
+    .then((data) => {
+      Object.assign(product, data);
+      chosenImage.value = product.images[0].directus_files_id;
+    })
+    .finally(() => {
+      isLoading.value = false;
+    });
 
   getSizes();
 });
@@ -44,22 +58,37 @@ watch(
   () => route.params.productId,
   async (newId) => {
     isLoading.value = true;
-    await getProductById(newId).then((data) => {
-      Object.assign(product, data);
-      chosenImage.value = product.images[0].directus_files_id;
-      isLoading.value = false;
-    });
+    await getProductById(newId)
+      .then((data) => {
+        Object.assign(product, data);
+        chosenImage.value = product.images[0].directus_files_id;
+      })
+      .finally(() => {
+        isLoading.value = false;
+      });
   }
 );
 
 onUnmounted(() => {
   isLoading.value = false;
+  document.body.style.overflow = "";
+});
+
+useHead({
+  title: () =>
+    `MANYU | ${product.name} | Own Premium Production From Dagestan since 2020. Concept basic clothing`,
 });
 </script>
 
 <template>
-  <div :class="$style.backdrop" @click.self="close">
-    <div :class="$style.container">
+  <div :class="$style.backdrop" @click.self="routerBack">
+    <div
+      ref="modalRef"
+      @touchstart="swipeStart"
+      @touchmove="swipeMove"
+      @touchend="handleSwipeEnd"
+      :class="$style.container"
+    >
       <div :class="$style.loaderContainer" v-if="isLoading">
         <root-loader />
       </div>
@@ -75,6 +104,9 @@ onUnmounted(() => {
             ]"
           >
             <img
+              loading="lazy"
+              width="168"
+              height="224"
               :src="`${API_URL}/assets/${image.directus_files_id}`"
               alt="Прикрепленная фотография к изделию"
             />
@@ -82,6 +114,8 @@ onUnmounted(() => {
         </div>
         <div :class="$style.chosenImage">
           <img
+            width="555"
+            height="740"
             :src="`${API_URL}/assets/${chosenImage}`"
             alt="Прикрепленная фотография к изделию"
           />
@@ -91,7 +125,7 @@ onUnmounted(() => {
       <div v-if="!isLoading" :class="$style.info">
         <div :class="$style.header">
           <h2>{{ product.name }}</h2>
-          <button @click="close">X</button>
+          <button @click="routerBack">X</button>
         </div>
 
         <div :class="$style.sizes">
@@ -179,6 +213,12 @@ onUnmounted(() => {
   height: 100%;
   animation-delay: 0.5s;
   z-index: 1000;
+
+  @media (width < 768px) {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+  }
 }
 
 @keyframes backdropOpacity {
@@ -200,7 +240,7 @@ onUnmounted(() => {
 }
 
 .container {
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -209,12 +249,35 @@ onUnmounted(() => {
   color: var.$c-text;
   padding: 4.4rem;
 
-  width: 95vw;
-  height: 95vh;
+  width: 90vw;
+  max-width: 192rem;
+  height: min(90vh, 92rem);
 
   display: flex;
-  justify-content: stretch;
   gap: 4.4rem;
+  overflow: hidden;
+
+  @media (width < 1200px) {
+    width: 95.2vw;
+    max-width: none;
+    height: min(95.2vh, 92rem);
+  }
+
+  @media (width < 768px) {
+    width: 100%;
+    max-width: none;
+    height: 80vh;
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: none;
+
+    flex-direction: column;
+    overflow-y: auto;
+    scrollbar-width: none;
+
+    padding-bottom: 0;
+  }
 }
 
 .loaderContainer {
@@ -226,19 +289,54 @@ onUnmounted(() => {
 
 .gallery {
   display: flex;
-  justify-content: center;
-  align-items: stretch;
+  height: 100%;
+  justify-content: start;
+  align-items: stretch !important;
   gap: 4.4rem;
   animation: opacity 0.5s;
+
+  @media (width < 1200px) {
+    width: 40%;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 2.2rem;
+  }
+
+  @media (width < 768px) {
+    flex-direction: column-reverse;
+    width: 100%;
+    min-height: 60%;
+    gap: 2.2rem;
+  }
 }
 
 .scrollable {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 4.4rem;
   overflow-y: auto;
   scroll-snap-type: y mandatory;
   scrollbar-width: none;
+
+  @media (width < 1200px) {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2.2rem;
+
+    width: 100%;
+    min-width: 0;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    white-space: nowrap;
+  }
+
+  @media (width < 768px) {
+    height: 100%;
+  }
 }
 
 .image {
@@ -250,19 +348,35 @@ onUnmounted(() => {
   border: 0.2rem solid var.$c-neutral-4;
   scroll-snap-align: start;
 
-  width: 16.8rem;
-  height: 22.4rem;
+  width: 14rem;
+  height: 18.7rem;
+  overflow: clip;
 
   transition: 0.2s border;
+  flex: 0 0 auto;
+
+  @media (width < 768px) {
+    width: 100%;
+    height: 100%;
+  }
 
   & > img {
-    height: 85%;
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: 100%;
     object-fit: cover;
+    overflow-clip-margin: content-box;
+    overflow: clip;
   }
 }
 
 .active {
   border: 0.2rem solid var.$c-accent;
+
+  @media (width < 768px) {
+    border: 0.2rem solid var.$c-neutral-4;
+  }
 }
 
 .chosenImage {
@@ -274,14 +388,24 @@ onUnmounted(() => {
 
   width: 55.5rem;
 
+  @media (width < 1200px) {
+    width: 100%;
+    flex: 1;
+  }
+
+  @media (width < 768px) {
+    display: none;
+  }
+
   & > img {
-    height: 85%;
-    object-fit: cover;
+    display: block;
+    width: auto;
+    height: 100%;
+    object-fit: contain;
   }
 }
 
 .info {
-  min-width: stretch;
   flex-direction: column;
   width: 100%;
   overflow-x: hidden;
@@ -289,6 +413,12 @@ onUnmounted(() => {
   scroll-snap-type: y mandatory;
   scrollbar-width: none;
   animation: opacity 0.2s;
+
+  @media (width < 768px) {
+    overflow-y: visible !important;
+    scroll-snap-type: none !important;
+    flex: none;
+  }
 }
 
 .header {
@@ -303,6 +433,11 @@ onUnmounted(() => {
     font-size: 2.4rem;
     font-weight: var.$fw-bold;
     color: var.$c-neutral-1;
+
+    @media (width < 768px) {
+      font-size: 3rem;
+      text-wrap: wrap;
+    }
   }
 
   & > button {
@@ -313,6 +448,10 @@ onUnmounted(() => {
     font-weight: var.$fw-bold;
     text-decoration: underline;
     transition: 0.2s color;
+
+    @media (width < 768px) {
+      display: none;
+    }
 
     &:hover {
       color: var.$c-accent;
@@ -334,6 +473,10 @@ onUnmounted(() => {
     font-weight: var.$fw-bold;
     color: var.$c-neutral-2;
     text-transform: uppercase;
+
+    @media (width < 768px) {
+      font-size: 1.6rem;
+    }
   }
 
   & > ul {
@@ -359,6 +502,10 @@ onUnmounted(() => {
       color: var.$c-neutral-1;
       text-wrap: nowrap;
 
+      @media (width < 768px) {
+        font-size: 2rem;
+      }
+
       & > span {
         color: var.$c-primary;
       }
@@ -369,7 +516,6 @@ onUnmounted(() => {
       scroll-snap-align: start;
       border: 0.1rem solid var.$c-primary;
       border-radius: 0.8rem;
-      text-wrap: nowrap;
       width: 5rem;
       height: 5rem;
     }
@@ -389,6 +535,10 @@ onUnmounted(() => {
     font-size: 2.4rem;
     font-weight: var.$fw-bold;
     color: var.$c-neutral-1;
+
+    @media (width < 768px) {
+      font-size: 3rem;
+    }
   }
 }
 
@@ -396,6 +546,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 2.2rem;
+  padding-bottom: 4.4rem;
 
   & > details {
     padding-bottom: 2.2rem;
@@ -410,6 +561,10 @@ onUnmounted(() => {
       list-style-type: none;
       transition: 0.2s color;
 
+      @media (width < 768px) {
+        font-size: 2rem;
+      }
+
       &:hover {
         color: var.$c-accent;
       }
@@ -419,15 +574,28 @@ onUnmounted(() => {
       color: var.$c-accent;
     }
 
+    &[open] > .richContainer {
+      opacity: 1;
+      max-height: 1000px;
+    }
+
     & > .richContainer {
       margin-top: 3rem;
       display: flex;
       flex-direction: column;
       gap: 1rem;
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 0.3s ease, max-height 0.3s ease;
       & > p {
         font-size: 1.8rem;
         font-weight: var.$fw-regular;
         color: var.$c-neutral-1;
+
+        @media (width < 768px) {
+          font-size: 2rem;
+        }
       }
 
       & > ol,
@@ -435,6 +603,10 @@ onUnmounted(() => {
         font-size: 1.8rem;
         font-weight: var.$fw-regular;
         color: var.$c-neutral-1;
+
+        @media (width < 768px) {
+          font-size: 2rem;
+        }
       }
     }
 
@@ -446,6 +618,10 @@ onUnmounted(() => {
       column-gap: 5.1rem;
       row-gap: 1.2rem;
 
+      @media (width < 768px) {
+        grid-template-columns: repeat(1, 1fr);
+      }
+
       & > li {
         all: unset;
         display: grid;
@@ -454,6 +630,10 @@ onUnmounted(() => {
         font-size: 1.8rem;
         font-weight: var.$fw-regular;
         color: var.$c-neutral-1;
+
+        @media (width < 768px) {
+          font-size: 2rem;
+        }
 
         & > span {
           text-align: center;
