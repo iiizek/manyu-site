@@ -16,7 +16,7 @@ const { getProductsBySlug } = useProductsStore();
 const route = useRoute();
 const routerBack = useRouterBack();
 const { swipeStart, swipeMove, swipeEnd } = useSwipe(
-  200,
+  100,
   "clientX",
   routerBack
 );

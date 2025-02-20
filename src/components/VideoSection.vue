@@ -58,13 +58,15 @@ onUnmounted(() => {
       v-show="videoId"
       ref="videoRef"
       :class="$style.video"
-      :src="videoId && `${API_URL}/assets/${videoId}`"
       autoplay
       muted
       playsinline
       loop
       loading="lazy"
-    ></video>
+      preload="metadata"
+    >
+      <source :src="videoId && `${API_URL}/assets/${videoId}`" />
+    </video>
   </section>
 </template>
 
@@ -74,6 +76,10 @@ onUnmounted(() => {
 .container {
   width: 100%;
   height: 100vh;
+
+  @media (width < 768px) {
+    height: 100%;
+  }
 }
 
 .red {
@@ -92,5 +98,6 @@ onUnmounted(() => {
   pointer-events: none;
   height: 100%;
   margin: 0 auto;
+  will-change: transform, opacity;
 }
 </style>

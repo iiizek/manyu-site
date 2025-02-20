@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from "vue";
-import { useRoute } from "vue-router";
 
 import BurgerButton from "@/components/BurgerButton.vue";
 import LogoIcon from "@/components/icons/LogoIcon.vue";
@@ -10,8 +9,6 @@ import RootNav from "@/components/RootNav.vue";
 const isFirstRender = ref(true);
 const isOpenNav = ref(false);
 const isAnimating = ref(false);
-
-const route = useRoute();
 
 const toggleNav = () => {
   if (isFirstRender.value) {
@@ -27,9 +24,13 @@ const toggleNav = () => {
 };
 
 const goOnTop = () => {
-  if (route.path === "/") {
-    window.scrollTo(0, 0);
+  window.scrollTo(0, 0);
+  if (isOpenNav.value) {
+    toggleNav();
   }
+};
+
+const closeNav = () => {
   if (isOpenNav.value) {
     toggleNav();
   }
@@ -56,7 +57,7 @@ const goOnTop = () => {
         </router-link>
       </h1>
 
-      <router-link to="/favorites" @click="goOnTop" :class="$style.favorites">
+      <router-link to="/favorites" @click="closeNav" :class="$style.favorites">
         <heart-icon :is-open-nav="isOpenNav" />
       </router-link>
     </div>

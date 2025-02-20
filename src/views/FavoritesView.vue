@@ -16,6 +16,7 @@ const { favorites } = useFavoritesStore();
 const API_URL = import.meta.env.VITE_API_URL;
 
 onMounted(() => {
+  window.scrollTo(0, 0);
   if (favorites.length > 0) {
     isLoading.value = true;
   }
