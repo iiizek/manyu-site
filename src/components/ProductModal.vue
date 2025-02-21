@@ -249,6 +249,8 @@ useHead({
   color: var.$c-text;
   padding: 4.4rem;
 
+  overscroll-behavior: none;
+
   width: 90vw;
   max-width: 192rem;
   height: min(90vh, 92rem);
