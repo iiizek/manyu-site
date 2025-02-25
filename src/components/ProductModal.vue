@@ -403,7 +403,7 @@ useHead({
     display: block;
     width: auto;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
   }
 }
 

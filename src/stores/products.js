@@ -124,6 +124,33 @@ const useProductsStore = defineStore("products", () => {
     }
   };
 
+  const searchProducts = async (query) => {
+    try {
+      let data = await directus.request(
+        readItems("products", {
+          filter: {
+            name: { _contains: query },
+          },
+          fields: ["id", "name", "images.directus_files_id"],
+        })
+      );
+
+      if (!data.length) {
+        return [];
+      }
+
+      data.forEach((item) => {
+        item.image = item.images[0].directus_files_id;
+        delete item.images;
+      });
+
+      return data;
+    } catch (error) {
+      console.error("Ошибка при поиске товаров:", error);
+      return [];
+    }
+  };
+
   const getSizes = async () => {
     try {
       if (sizes.length > 0) return;
@@ -145,6 +172,7 @@ const useProductsStore = defineStore("products", () => {
     getProductsBySlug,
     getProductByIdMin,
     getProductById,
+    searchProducts,
     sizes,
     getSizes,
   };

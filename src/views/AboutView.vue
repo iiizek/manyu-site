@@ -32,15 +32,16 @@ useSeoMeta({
 </script>
 
 <template>
-  <section>
+  <section :class="$style.wrapper">
     <div v-if="isLoading" :class="$style.loadingWrapper">
       <root-loader />
     </div>
     <div v-else :class="$style.container">
       <h2 :class="$style.title">О бренде</h2>
       <div :class="$style.content" v-html="content"></div>
-      <purple-logo-icon />
     </div>
+
+    <div :class="$style.svg"><purple-logo-icon /></div>
   </section>
 </template>
 
@@ -56,6 +57,20 @@ useSeoMeta({
   }
 }
 
+.wrapper {
+  background: var.$c-primary url("/purple-bg.webp");
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+
+  & > .svg {
+    z-index: 1;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+  }
+}
+
 .loadingWrapper {
   display: flex;
   justify-content: center;
@@ -64,26 +79,15 @@ useSeoMeta({
 }
 
 .container {
-  z-index: -100;
+  z-index: 2;
   position: relative;
-  width: 100%;
   justify-content: flex-start;
-  min-height: 100vh;
-  background: url("/purple-bg.png") no-repeat;
   background-size: cover;
-  background-color: var.$c-primary;
   padding: 9rem 13rem;
   animation: opacity 1s;
 
   @media (width < 768px) {
     padding: 9rem 6rem;
-  }
-
-  & > svg {
-    z-index: -10;
-    position: fixed;
-    bottom: 0;
-    right: 0;
   }
 }
 

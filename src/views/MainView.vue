@@ -23,6 +23,7 @@ const isTopCollectionLoaded = computed(
 );
 
 onMounted(() => {
+  window.scrollTo(0, 0);
   isLoading.value = true;
   Promise.all([getTopVideo(), getVideoSections()]).then(() => {
     isLoading.value = false;

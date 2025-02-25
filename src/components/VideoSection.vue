@@ -75,17 +75,17 @@ onUnmounted(() => {
 
 .container {
   width: 100%;
-  height: 100lvh;
+  height: 100vh;
 }
 
 .red {
-  background: url("/red-bg.png") no-repeat;
+  background: url("/red-bg.webp") no-repeat;
   background-size: cover;
   background-color: var.$c-accent;
 }
 
 .purple {
-  background: url("/purple-bg.png") no-repeat;
+  background: url("/purple-bg.webp") no-repeat;
   background-size: cover;
   background-color: var.$c-primary;
 }
@@ -95,5 +95,9 @@ onUnmounted(() => {
   height: 100%;
   margin: 0 auto;
   will-change: transform, opacity;
+
+  @media (width < 768px) {
+    object-fit: cover;
+  }
 }
 </style>

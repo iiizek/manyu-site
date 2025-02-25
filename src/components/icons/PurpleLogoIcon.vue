@@ -28,10 +28,5 @@
         fill="#ECC8CF"
       />
     </g>
-    <defs>
-      <clipPath id="clip0_493_283">
-        <rect width="1255.14" height="840.47" fill="white" />
-      </clipPath>
-    </defs>
   </svg>
 </template>

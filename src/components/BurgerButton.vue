@@ -46,6 +46,17 @@ const emit = defineEmits(["toggle-nav"]);
 .hamburger {
   transform: 0.2s;
   position: relative;
+  transition: opacity 0.2s, transform 0.2s;
+
+  &:hover {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+
+  &:active {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
 }
 .hamburger .checkbox {
   position: absolute;

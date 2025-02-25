@@ -117,6 +117,7 @@ defineProps({
     max-width: 100%;
     height: 100%;
     overflow-clip-margin: content-box;
+    object-fit: cover;
     overflow: clip;
   }
 }

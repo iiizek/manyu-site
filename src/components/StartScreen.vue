@@ -26,7 +26,7 @@ import LogoIcon from "./icons/LogoIcon.vue";
   justify-content: center;
   align-items: center;
   background-color: var.$c-primary;
-  background: url("/purple-bg.jpg") no-repeat;
+  background: url("/purple-bg-start-screen.webp") no-repeat;
   background-size: cover;
 
   animation: slideToTop 1.5s 5s linear forwards;

@@ -7,10 +7,6 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  isAnimating: {
-    type: Boolean,
-    default: false,
-  },
 });
 
 const emit = defineEmits(["toggle-nav"]);
@@ -31,7 +27,7 @@ onMounted(() => {
 });
 
 watchEffect(() => {
-  if (props.isOpenNav || props.isAnimating) {
+  if (props.isOpenNav) {
     document.body.style.overflow = "hidden";
   } else {
     document.body.style.overflow = "";
@@ -40,7 +36,7 @@ watchEffect(() => {
 </script>
 
 <template>
-  <nav v-show="isOpenNav || isAnimating" :class="$style.nav">
+  <nav v-show="isOpenNav" :class="$style.nav">
     <ul :class="$style.navList">
       <li :class="$style.navItem">
         <router-link
@@ -134,9 +130,9 @@ watchEffect(() => {
 
   @media (width < 1200px) {
     grid-template-columns: 1fr;
-    text-align: center;
+    text-align: start;
     padding-inline: 3.6rem;
-    gap: 6.4rem;
+    gap: 2.6rem;
   }
 }
 
@@ -145,11 +141,13 @@ watchEffect(() => {
   font-size: 4.4rem;
 
   @media (width < 768px) {
-    font-size: 4rem;
+    font-size: 2.4rem;
+    line-height: 5.2rem;
   }
 }
 
 .navLink {
+  display: block;
   text-decoration: none;
   color: var.$c-background;
   transition: 0.2s all;
