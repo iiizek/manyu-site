@@ -11,16 +11,12 @@ import SearchIcon from "@/components/icons/SearchIcon.svg?component";
 
 const route = useRoute();
 const headerState = reactive({
-  isFirstRender: true,
   isOpenNav: false,
   isOpenSearch: false,
   isAnimating: false,
 });
 
 const toggleFeatures = (target, disable = null) => {
-  if (headerState.isFirstRender) {
-    headerState.isFirstRender = false;
-  }
   if (!headerState[target] && !headerState.isAnimating) {
     headerState.isAnimating = true;
     setTimeout(() => {
@@ -57,7 +53,6 @@ const closeAllFeatures = (features = ["isOpenNav", "isOpenSearch"]) => {
         {
           [$style.navActive]: headerState.isOpenNav,
           [$style.navInactive]: !headerState.isOpenNav,
-          [$style.noAnimation]: headerState.isFirstRender,
           [$style.activeSearch]: headerState.isOpenSearch,
         },
       ]"

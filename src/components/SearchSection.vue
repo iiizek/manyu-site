@@ -2,12 +2,17 @@
 import { computed, ref } from "vue";
 
 import SearchIcon from "@/components/icons/SearchIcon.svg?component";
+import ClearIcon from "@/components/icons/ClearIcon.svg?component";
+import RootLoader from "./RootLoader.vue";
 import ProductCard from "./ProductCard.vue";
 import useProductsStore from "@/stores/products";
 
 const text = ref("");
+const message = ref("");
+const isLoading = ref(false);
 const products = ref([]);
 const isDisabled = computed(() => text.value.length === 0);
+const isProductsLoaded = computed(() => products.value.length > 0);
 const { searchProducts } = useProductsStore();
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -16,29 +21,53 @@ const toggleSearch = (e) => {
   e.preventDefault();
 
   if (text.value.length > 0) {
-    searchProducts(text.value).then((data) => {
-      console.log(data);
-      products.value = data;
-    });
+    message.value = "";
+    isLoading.value = true;
+    searchProducts(text.value)
+      .then((data) => {
+        console.log(data);
+        products.value = data;
+
+        if (data.length === 0) {
+          message.value = "Ничего не найдено";
+        } else {
+          message.value = "";
+        }
+      })
+      .finally(() => {
+        isLoading.value = false;
+      });
   }
 };
 
 const handleInput = (e) => {
   text.value = e.target.value;
 };
+
+const clearInput = () => {
+  text.value = "";
+};
 </script>
 
 <template>
-  <section :class="$style.container">
+  <section
+    :class="[$style.container, { [$style.paddingBottom]: !isProductsLoaded }]"
+  >
     <form :class="$style.form" id="search-section" name="search-section">
-      <input
-        :class="$style.input"
-        id="search-input"
-        placeholder="Искать"
-        type="search"
-        :value="text"
-        @input="handleInput"
-      />
+      <div :class="$style.inputWrapper">
+        <input
+          :class="$style.input"
+          id="search-input"
+          type="search"
+          placeholder="Искать"
+          :value="text"
+          @input="handleInput"
+        />
+        <button @click="clearInput" v-if="!isDisabled" type="button">
+          <clear-icon :class="$style.clearIcon" />
+        </button>
+      </div>
+
       <button
         @click="toggleSearch"
         :disabled="isDisabled"
@@ -49,7 +78,15 @@ const handleInput = (e) => {
       </button>
     </form>
 
-    <ul :class="$style.productList">
+    <div v-if="message.length > 0" :class="$style.message">
+      <p>{{ message }}</p>
+    </div>
+
+    <div :class="$style.loaderWrapper" v-if="isLoading">
+      <root-loader />
+    </div>
+
+    <ul v-if="isProductsLoaded" :class="$style.productList">
       <product-card
         v-for="product in products"
         :key="product.id"
@@ -72,10 +109,14 @@ const handleInput = (e) => {
   background-color: var.$c-background;
   transition: 0.5s all;
   gap: 2.2rem;
-  max-height: 90vh;
+  max-height: 90svh;
 
   animation: opacity 0.5s;
   scrollbar-width: none;
+}
+
+.paddingBottom {
+  padding-bottom: 4.4rem;
 }
 
 .form {
@@ -92,18 +133,48 @@ const handleInput = (e) => {
   }
 }
 
-.input {
-  all: unset;
-  flex: 1;
-  font-size: 2.4rem;
-  font-weight: var.$fw-semi;
-  text-transform: uppercase;
+.inputWrapper {
+  position: relative;
   width: 77rem;
   padding: 2rem;
   border-bottom: 0.2rem solid var.$c-accent;
+  flex: 1;
+
+  & > button {
+    all: unset;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    right: 2rem;
+    transform: translateY(-50%);
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 0.5;
+    }
+
+    & > .clearIcon {
+      stroke: var.$c-accent;
+    }
+  }
+}
+
+.input {
+  all: unset;
+  font-size: 2.4rem;
+  font-weight: var.$fw-semi;
+  text-transform: uppercase;
+  width: stretch;
 
   &::placeholder {
     color: var.$c-neutral-2;
+  }
+
+  &::-webkit-search-cancel-button {
+    display: none;
   }
 
   @media (width < 768px) {
@@ -137,6 +208,19 @@ const handleInput = (e) => {
   stroke: var.$c-background;
 }
 
+.message {
+  text-align: center;
+  font-size: 2.4rem;
+  color: var.$c-neutral-2;
+}
+
+.loaderWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-block: 6.4rem;
+}
+
 .productList {
   list-style: none;
   display: grid;
@@ -146,6 +230,8 @@ const handleInput = (e) => {
   padding-inline: 3.6rem;
   justify-content: start;
   align-items: start;
+
+  animation: opacity 1s;
 
   overflow: auto;
   scrollbar-width: none;

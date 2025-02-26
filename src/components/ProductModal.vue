@@ -128,7 +128,7 @@ useHead({
           <button @click="routerBack">X</button>
         </div>
 
-        <div :class="$style.sizes">
+        <div v-if="product.sizes" :class="$style.sizes">
           <h3>Размеры</h3>
           <ul>
             <li
@@ -144,7 +144,7 @@ useHead({
           </ul>
         </div>
 
-        <div :class="$style.colors">
+        <div v-if="product.colors" :class="$style.colors">
           <h3>Цвета</h3>
           <ul>
             <li
@@ -365,7 +365,7 @@ useHead({
   & > img {
     display: block;
     width: auto;
-    max-width: 100%;
+    width: 100%;
     height: 100%;
     object-fit: cover;
     overflow-clip-margin: content-box;
@@ -401,7 +401,7 @@ useHead({
 
   & > img {
     display: block;
-    width: auto;
+    width: 100%;
     height: 100%;
     object-fit: cover;
   }

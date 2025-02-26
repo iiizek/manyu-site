@@ -129,7 +129,7 @@ const useProductsStore = defineStore("products", () => {
       let data = await directus.request(
         readItems("products", {
           filter: {
-            name: { _contains: query },
+            search: { _contains: query.toLowerCase() },
           },
           fields: ["id", "name", "images.directus_files_id"],
         })
