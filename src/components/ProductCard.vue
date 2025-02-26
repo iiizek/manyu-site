@@ -38,7 +38,7 @@ defineProps({
           },
         ]"
       >
-        <!-- <img
+        <img
           v-if="imgUrl"
           loading="lazy"
           width="458"
@@ -46,7 +46,7 @@ defineProps({
           :src="imgUrl"
           :alt="imgUrl"
           :class="[$style.image, $style.backgroundImage]"
-        /> -->
+        />
         <img
           loading="lazy"
           width="458"
@@ -123,7 +123,7 @@ defineProps({
   & > img {
     display: block;
     width: auto;
-    width: 100%;
+    max-width: 100%;
     height: 100%;
     overflow-clip-margin: content-box;
     object-fit: cover;
@@ -131,17 +131,17 @@ defineProps({
     z-index: 2;
   }
 
-  // & > .backgroundImage {
-  //   position: absolute;
-  //   top: 0;
-  //   left: 0;
-  //   width: 100%;
-  //   height: 100%;
-  //   z-index: 1;
-  //   object-fit: cover;
-  //   filter: blur(4rem);
-  //   transform: scale(1.2);
-  // }
+  & > .backgroundImage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    object-fit: cover;
+    filter: blur(5rem);
+    transform: scale(1.2);
+  }
 }
 
 .name {

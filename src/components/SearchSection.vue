@@ -25,7 +25,6 @@ const toggleSearch = (e) => {
     isLoading.value = true;
     searchProducts(text.value)
       .then((data) => {
-        console.log(data);
         products.value = data;
 
         if (data.length === 0) {
@@ -167,7 +166,7 @@ const clearInput = () => {
   font-size: 2.4rem;
   font-weight: var.$fw-semi;
   text-transform: uppercase;
-  width: stretch;
+  width: 90%;
 
   &::placeholder {
     color: var.$c-neutral-2;

@@ -307,7 +307,7 @@ useHead({
   @media (width < 768px) {
     flex-direction: column-reverse;
     width: 100%;
-    min-height: 60%;
+    min-height: 70%;
     gap: 2.2rem;
   }
 }
@@ -342,6 +342,7 @@ useHead({
 }
 
 .image {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -365,7 +366,7 @@ useHead({
   & > img {
     display: block;
     width: auto;
-    width: 100%;
+    max-width: 100%;
     height: 100%;
     object-fit: cover;
     overflow-clip-margin: content-box;
@@ -401,9 +402,9 @@ useHead({
 
   & > img {
     display: block;
-    width: 100%;
+    max-width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
   }
 }
 
