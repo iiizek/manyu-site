@@ -18,7 +18,9 @@ import PhoneIcon from "@/components/icons/PhoneIcon.svg?component";
       <a href="tel:+79285665046" target="_blank"
         ><phone-icon /> +7 (928) 566 50-46</a
       >
-      <a href="geo://42.974373,47.496283" target="_blank"
+      <a
+        href="https://yandex.eu/maps/org/70347951862/?ll=47.496282%2C42.974374&z=17.1"
+        target="_blank"
         ><map-icon /> г. Махачкала, ул. Абубакарова, 48</a
       >
     </p>

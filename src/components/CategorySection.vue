@@ -104,7 +104,7 @@ onUnmounted(() => {
       <router-link
         v-if="isManyItems"
         :class="$style.link"
-        :to="`/collection-${slug}`"
+        :to="`/collections/${slug}`"
       >
         Смотреть все
       </router-link>

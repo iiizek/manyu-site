@@ -30,7 +30,7 @@ const router = createRouter({
       component: AboutView,
     },
     {
-      path: "/collection-:collectionSlug(.*)",
+      path: "/collections/:collectionSlug",
       name: "collection",
       component: CollectionView,
     },

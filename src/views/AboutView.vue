@@ -2,6 +2,9 @@
 import { onMounted, ref, onUnmounted } from "vue";
 import { useSeoMeta } from "@unhead/vue";
 
+import useSwipe from "@/hooks/useSwipe";
+import useRouterBack from "@/hooks/useRouterBack";
+
 import useContentStore from "@/stores/content";
 import RootLoader from "@/components/RootLoader.vue";
 import PurpleLogoIcon from "@/components/icons/PurpleLogoIcon.vue";
@@ -10,6 +13,13 @@ const { getAboutContent } = useContentStore();
 
 const isLoading = ref(false);
 const content = ref("");
+
+const routerBack = useRouterBack();
+const { swipeStart, swipeMove, swipeEnd } = useSwipe(
+  100,
+  "clientX",
+  routerBack
+);
 
 onMounted(async () => {
   window.scrollTo(0, 0);
@@ -32,7 +42,12 @@ useSeoMeta({
 </script>
 
 <template>
-  <section :class="$style.wrapper">
+  <section
+    @touchstart="swipeStart"
+    @touchmove="swipeMove"
+    @touchend="swipeEnd"
+    :class="$style.wrapper"
+  >
     <div v-if="isLoading" :class="$style.loadingWrapper">
       <root-loader />
     </div>

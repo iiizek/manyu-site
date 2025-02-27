@@ -1,6 +1,9 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 
+import useSwipe from "@/hooks/useSwipe";
+import useRouterBack from "@/hooks/useRouterBack";
+
 import RootLoader from "@/components/RootLoader.vue";
 import ProductCard from "@/components/ProductCard.vue";
 import useProductsStore from "@/stores/products";
@@ -12,6 +15,13 @@ const favoriteProducts = ref([]);
 
 const { getProductByIdMin } = useProductsStore();
 const { favorites } = useFavoritesStore();
+
+const routerBack = useRouterBack();
+const { swipeStart, swipeMove, swipeEnd } = useSwipe(
+  100,
+  "clientX",
+  routerBack
+);
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -41,7 +51,12 @@ useHead({
 </script>
 
 <template>
-  <section :class="$style.container">
+  <section
+    @touchstart="swipeStart"
+    @touchmove="swipeMove"
+    @touchend="swipeEnd"
+    :class="$style.container"
+  >
     <div v-if="isLoading" :class="$style.loadingWrapper">
       <root-loader />
     </div>

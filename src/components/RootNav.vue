@@ -42,7 +42,7 @@ watchEffect(() => {
         <router-link
           :class="$style.navLink"
           @click="emit('toggle-nav')"
-          :to="`/collection-${topCollection.slug}`"
+          :to="`/collections/${topCollection.slug}`"
         >
           {{ topCollection.name }}
         </router-link>
@@ -56,7 +56,7 @@ watchEffect(() => {
         <router-link
           :class="$style.navLink"
           @click="emit('toggle-nav')"
-          :to="`/collection-${collection.slug}`"
+          :to="`/collections/${collection.slug}`"
         >
           {{ collection.name }}
         </router-link>
@@ -70,7 +70,7 @@ watchEffect(() => {
         <router-link
           @click="emit('toggle-nav')"
           :class="$style.navLink"
-          :to="`/collection-${collection.slug}`"
+          :to="`/collections/${collection.slug}`"
         >
           {{ collection.name }}
         </router-link>
